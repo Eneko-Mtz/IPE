@@ -1,0 +1,1104 @@
+var guardando_cuestionario = true;
+var id_actividad_planificando = 0;
+var id_planificacion_editando = 0;
+var es_profe = 1;
+var es_grupo_provisional = -1;
+
+if(perfil_principal == 'Alumno' || desde_seguimiento != 0){
+	es_profe = 0;
+}
+
+$(document).ready(function(){
+	cambia_idioma();
+	
+	if(guardar_interacciones){
+		$('.titulo_indice').click(function(){
+			vacia_variables();
+			accion_interaccion = 'BIBLIOTECA_CLIC_INDICE';
+			id_libro_interaccion = id_libro_abierto;
+			id_capitulo_interaccion = id_capitulo_abierto;
+			mas_info = $(this).html();
+			guarda_interaccion();
+		});
+		$('.parrafo_indice').click(function(){
+			vacia_variables();
+			accion_interaccion = 'BIBLIOTECA_CLIC_INDICE';
+			id_libro_interaccion = id_libro_abierto;
+			id_capitulo_interaccion = id_capitulo_abierto;
+			mas_info = $(this).html();
+			guarda_interaccion();
+		});
+	}
+
+	var tmrReady = setInterval(function(){
+		$('#XXXcont_base').show();
+		$('#div_cargando_contenido_capitulo').hide();
+		
+		if(id_actividad_libro_realizando != ''){
+			var tmrReadyxx = setInterval(function(){
+				$('#contenedor0').animate({scrollTop: $('.boton_realiza_actividad[id_actividad='+id_actividad_libro_realizando+']').offset().top - 150}, 10);
+				id_actividad_libro_realizando = '';
+				clearInterval(tmrReadyxx);
+			}, 500);
+		}
+		
+		if(alerta_ley_abriendo != ''){
+			$('#'+alerta_ley_abriendo).show();
+			console.log('muestro2:'+alerta_ley_abriendo);
+			var tmrReadyxx = setTimeout(function(){
+				$('#contenedor0').animate({scrollTop: $('#'+alerta_ley_abriendo).offset().top - 150}, 10);
+				alerta_ley_abriendo = '';
+			}, 500);
+		}
+		
+		if(enlace_apartado != ''){
+			var tmrReadyxx2 = setInterval(function(){
+				window.location.href = '#'+enlace_apartado;
+				enlace_apartado = '';
+				clearInterval(tmrReadyxx2);
+			}, 500);
+		}
+		
+		clearInterval(tmrReady);
+	}, 3000);
+	
+	// SCROLL E IR ARRIBA
+	$('#contenedor0').scroll(function(){
+		if( $(this).scrollTop() > 0 ){
+			$('.ir-arriba').slideDown(300);
+		}
+		else {
+			$('.ir-arriba').slideUp(300);
+		}
+	});
+	$('.ir-arriba').click(function(){
+		$('#contenedor0').animate({
+			scrollTop: '0px'
+		}, 300);
+	});
+ 
+	
+	// Click en celdas cuestionarios tipo tabla
+	$('.td_tabla_ejercicio').click(function(){
+		if(desde_seguimiento == 0){
+			if($(this).children("p:first").hasClass('td_tabla_seleccionado')){
+				$(this).children("p:first").removeClass('td_tabla_seleccionado');
+			}
+			else{
+				$(this).children("p:first").addClass('td_tabla_seleccionado')
+			}
+		}
+	});
+	
+	// Deshabilitar cuestionarios si somos profe y venimos desde seguimiento
+	if(desde_seguimiento != 0){
+		$('.text_area_cuestionario').prop('disabled', true);
+	}
+	
+	// HOVER CAMBIO FOTOS AZULES
+	$(".cambio_foto").hover(function() {
+		$('#cambio_foto_'+$( this ).attr('id_cambio_foto')).show();
+	}, function() {
+		$('#cambio_foto_'+$( this ).attr('id_cambio_foto')).hide();
+	});
+	
+	// Si somos profe no sacamos estrellas
+	if(es_profe == 1){
+		$('.fa-star').hide();
+	}
+	// Alumnos calculan progreso en cada punto
+	else{
+		$('.estrella_punto[tipo="subpunto"]').hide();
+		
+		$('.estrella_punto[tipo="punto"]').each(function(){
+			var id_punto = $(this).attr('id_punto');
+			$.ajax({
+				type : 'POST',
+				url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+				data : {'funcion':'calcula_estrella_punto', 'id_libro': id_libro_abierto, 'id_grupo': id_grupo_abierto, 'id_punto': id_punto},
+				success :  function(response){
+					if(response != ''){
+						$('.estrella_punto[tipo="punto"][id_punto='+id_punto+']').css('color', response);
+					}
+					else{
+						$('.estrella_punto[tipo="punto"][id_punto='+id_punto+']').css('color', 'lightgray');
+					}
+				}
+			});
+		});
+	}
+	
+	// PONER BOTONES ACTIVIDADES LIBRO (SEGÚN SI ESTÁN PLANIFICADAS, PENDIENTES O CORREGIDAS...)
+	// Y
+	// Cargar respuestas usuario en cuestionarios SOLO SI NO ES GRUPO PROVISIONAL
+	//
+	// ****** ANTES COMPROBAMOS SI EL GRUPO ACTUAL ES PROVISIONAL *****
+	//
+	$.ajax({
+		type : 'POST',
+		url  : '/../../../php/1/f/f_grupos.php',
+		data : {'es_grupo_provisional': id_grupo_abierto},
+		success :  function(response){
+			es_grupo_provisional = response;
+			
+			$('.actividad_libro').each(function(){
+				var id_actividad = $(this).attr('id_actividad');
+				actualiza_botones_actividad(id_actividad, es_grupo_provisional);
+			});
+			
+			// Cargar respuestas usuario en cuestionarios SOLO SI NO ES GRUPO PROVISIONAL
+			if(es_grupo_provisional == 0){
+				$.ajax({
+					type : 'POST',
+					url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+					data : {'funcion':'carga_respuestas_cuestionarios', 'capitulo': elContenido[1], 'id_grupo': id_grupo_abierto, 'id_usuario': desde_seguimiento},
+					success :  function(response){
+						if(response != ''){
+							var listaContestaciones = JSON.parse(response);
+							for (var i = 0; i < listaContestaciones.length; i++){
+								var id_cuest = listaContestaciones[i]['id_cuestionario'];
+								var contestacion = listaContestaciones[i]['contestacion'];
+								var tipo = listaContestaciones[i]['tipo'];
+								if(contestacion != ''){
+									if(tipo == 'desarrollo'){
+										$('#cuestionario_'+id_cuest).text(contestacion);
+									}
+									else if(tipo == 'tabla'){
+										var contestaciones_tabla = contestacion.split('#');
+										for (var j = 0; j < contestaciones_tabla.length; j++){
+											$('#'+contestaciones_tabla[j]).addClass('td_tabla_seleccionado');
+										}
+									}
+									
+									$('.texto_oculto_cuestionario[id_cuestionario='+id_cuest+']').show();
+								}
+							}
+						}
+						guardando_cuestionario = false;
+					}
+				});
+			}
+			else{
+				guardando_cuestionario = false;
+			}
+		}
+	});
+
+
+	if(perfil_principal == 'Profesor'){
+		for (var i = 0; i < array_alertas_leyes.length; i++) {
+			var alerta_ley = array_alertas_leyes[i];
+			if(alerta_ley.id_capitulo_elemento == id_capitulo_abierto){
+				$('#'+alerta_ley.id_elemento_contenido).show();
+			}
+		}
+		
+		$('.tag_ley').click(function(){
+			var id_elem = $(this).attr('id');
+			var pos_elem_array = 0;
+			$('#div_modificaciones_legislativas_modal').empty();
+			
+			var art_anterior = 0;
+			for (var i = 0; i < array_alertas_leyes.length; i++) {
+				var alerta_ley = array_alertas_leyes[i];
+				if(alerta_ley.id_elemento_contenido == id_elem){
+					pos_elem_array = i;
+					$('#ley_modificada_modal').html(alerta_ley.nombre_ley_referenciada);
+					$('#enlace_boe_modal').attr('href', 'https://www.boe.es/buscar/act.php?id='+alerta_ley.id_boe_referenciado);
+					if(alerta_ley.articulo != null && alerta_ley.articulo != ''){
+						if(art_anterior != alerta_ley.articulo){
+							$('#div_modificaciones_legislativas_modal').append('<p style="color: green; font-weight: 700; margin-top:10px">Artículo '+alerta_ley.articulo+'</p>');
+							art_anterior = alerta_ley.articulo;
+						}
+					}
+					else{
+						art_anterior = 0;
+					}
+					
+					$('#div_modificaciones_legislativas_modal').append('<p style="margin-left:20px">'+alerta_ley.modificacion+'</p><p style="margin-left:40px; margin-bottom: 10px;"><a href="https://www.boe.es/buscar/act.php?id='+alerta_ley.ref_boe+'" target="_blank" style="color: #3d5dd3; font-weight: 700; text-decoration: underline; cursor: pointer;">'+alerta_ley.resumen+'</a></p>');
+				}
+			}
+			
+			procesa_alerta_ley(pos_elem_array);
+			$('#modalCambioLegislativo').modal();
+		});
+	}
+});
+
+
+
+/************ NAVEGAR OTRA UNIDAD ******************/
+function enlace_otra_unidad(id_libro, id_capitulo, url_html, id_apartado){
+	enlace_apartado = id_apartado;
+	abre_contenido_html(id_libro, id_capitulo, url_html);
+}
+
+
+
+/************ACTUALIZA BOTONES ACTIVIDAD ******************/
+function actualiza_botones_actividad(id_actividad, grupo_provisional){
+	// ALUMNO
+	if(es_profe == 0){
+		$('.actividad_libro[id_actividad='+id_actividad+']').html(
+			'<div class="parte_alumno" id_actividad="'+id_actividad+'" style="display:none">\
+				<div class="tope_alumno" id_actividad="'+id_actividad+'" style="display:none; margin-top: -10px; font-size: 14px;margin-bottom: 2px;">\
+					<span>Realizable hasta <b>20/11/2021 09:00</b></span>\
+				</div>\
+				<div>\
+					<img class="botonesInteractivos grow boton_realiza_actividad actividad_deshabilitada" id_actividad="'+id_actividad+'" onclick="realiza_ejercicio(\''+id_actividad+'\')" title="'+array_idioma['html_contenidos_Realizar actividad_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_escribe_g.png">\
+					\
+					<img class="botonesInteractivos grow boton_actividad_pendiente_alumno actividad_deshabilitada" id_actividad="'+id_actividad+'" onclick="consulta_ejercicio(\''+id_actividad+'\', 0)" title="'+array_idioma['html_contenidos_Pendiente de comprobar_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_hora_g.png" >\
+					\
+					<div style="display: inline-block; position: relative;">\
+						<img class="botonesInteractivos grow boton_actividad_completada actividad_deshabilitada" id_actividad="'+id_actividad+'" onclick="consulta_ejercicio(\''+id_actividad+'\', 1)" title="'+array_idioma['html_contenidos_Comprobada_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_nota_g.png" style="width: auto; height: 36px;">\
+						\
+						<span class="nota_actividad actividad_deshabilitada" id_actividad="'+id_actividad+'" style="position: absolute;  top: calc(50% - 12px); font-weight: 700; font-family: \'Montserrat\';  font-size: 21px; right: 14px;pointer-events: none;">-</span>\
+					</div>\
+				</div>\
+			</div>');
+		
+		// Solo consultamos si no es grupo_provisional
+		if(grupo_provisional == 0){		
+			console.log('Llega '+id_actividad+' - '+ id_grupo_abierto+' - '+ desde_seguimiento);	
+			$.ajax({
+				type : 'POST',
+				url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+				data : {'funcion':'consulta_actividad_multiple_activa_con_fecha', 'id_actividad': id_actividad, 'id_grupo': id_grupo_abierto, 'id_usuario': desde_seguimiento},
+				success :  function(response){
+					// Color si la nota no está (si tiene nota luego se pone blanco)
+					$('.nota_actividad[id_actividad='+id_actividad+']').css('color', '#8e8b86');
+					
+					// ESTADOS
+					// 0 no activa
+					// 1 activa y no realizada
+					// 2 pendiente corregir
+					// 3 corregida
+					if(response == 0){
+						// no hacemos nada pues ya está deshabilitado por defecto
+					}
+					else if(response.startsWith("1#")){
+						$('.tope_alumno[id_actividad='+id_actividad+']').show();
+
+						var array_resp = response.split('#');
+						if(array_resp[1] == null || array_resp[1] == ''){
+							$('.tope_alumno[id_actividad='+id_actividad+']').html('<span>Sin fecha límite de entrega</span>');
+						}
+						else{
+							$('.tope_alumno[id_actividad='+id_actividad+']').html('<span>Realizable hasta <b>'+array_resp[1]+'</b></span>');
+						}
+						
+						$('.boton_realiza_actividad[id_actividad='+id_actividad+']').removeClass('actividad_deshabilitada');
+						$('.boton_realiza_actividad[id_actividad='+id_actividad+']').attr('src', '/contenidos_html/1/texto/fp/grado_medio/fol/img/b_escribe.png');
+					}
+					else if(response == 2){
+						$('.boton_actividad_pendiente_alumno[id_actividad='+id_actividad+']').removeClass('actividad_deshabilitada');
+						$('.boton_actividad_pendiente_alumno[id_actividad='+id_actividad+']').attr('src', '/contenidos_html/1/texto/fp/grado_medio/fol/img/b_hora.png');
+					}
+					else if(response.startsWith("3#")){
+						var array_resp = response.split('#');
+						// Color si la nota no está (si tiene nota luego se pone blanco)
+						$('.nota_actividad[id_actividad='+id_actividad+']').css('color', 'white');
+						$('.boton_actividad_completada[id_actividad='+id_actividad+']').removeClass('actividad_deshabilitada');
+						$('.boton_actividad_completada[id_actividad='+id_actividad+']').attr('src', '/contenidos_html/1/texto/fp/grado_medio/fol/img/b_nota.png');
+						$('.nota_actividad[id_actividad='+id_actividad+']').removeClass('actividad_deshabilitada');
+						$('.nota_actividad[id_actividad='+id_actividad+']').html(array_resp[1]);
+					}
+					
+					$('.parte_alumno[id_actividad='+id_actividad+']').show();
+				}
+			});
+		}
+		else{
+			$('.parte_alumno[id_actividad='+id_actividad+']').show();
+		}
+	}
+	// PROFESOR
+	else{
+		// Solo consultamos si no es grupo_provisional
+		if(grupo_provisional == 0){	
+			$.ajax({
+				type : 'POST',
+				url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+				data : {'funcion':'consulta_estado_planificacion_actividad_multiple', 'id_actividad': id_actividad, 'id_grupo': id_grupo_abierto},
+				success :  function(response){
+					//console.log('Respuesta - '+id_actividad+' - '+response);
+					// ESTADOS: 
+					// 0: no planificado
+					// 1: planificado grupo entero
+					// 2: planificado algunos usuarios
+					var planificar_deshabilitado = '';
+					var boton_planificar = 'b_reunion.png';
+					if(response == 1){
+						planificar_deshabilitado = 'actividad_deshabilitada';
+						boton_planificar = 'b_reunion_g.png';
+					}
+					else if(response == 2){
+						boton_planificar = 'b_reunion_naranja.png';
+					}
+					
+					// PONEMOS LOS BOTONES (CON EL ESTADO DE PLANIFICAR YA ACTUALIZADO)
+					$('.actividad_libro[id_actividad='+id_actividad+']').html(
+									'<div class="parte_alumno" id_actividad="'+id_actividad+'" style="display:none; position: absolute;right: 155px;border: 2px solid #ede9e4;padding: 4px 15px;border-radius: 20px;">\
+										<div class="tope_alumno" id_actividad="'+id_actividad+'" style="display:none; margin-top: 0px;font-size: 14px;margin-bottom: 2px;"><span>Realizable hasta <b>20/11/2021 09:00</b></span></div>\
+										\
+										<i class="fa fa-user" aria-hidden="true" style="position: absolute; top: -12px; right: 10px;color: #9f9c97;"></i>\
+										\
+										<img class="botonesInteractivos grow boton_realiza_actividad actividad_deshabilitada" id_actividad="'+id_actividad+'" onclick="realiza_ejercicio(\''+id_actividad+'\')" title="'+array_idioma['html_contenidos_Realizar actividad_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_escribe_g.png">\
+										\
+										<img class="botonesInteractivos grow boton_actividad_pendiente_alumno actividad_deshabilitada" id_actividad="'+id_actividad+'" onclick="consulta_ejercicio(\''+id_actividad+'\', 0)" title="'+array_idioma['html_contenidos_Pendiente de comprobar_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_hora_g.png">\
+										\
+										<div style="display: inline-block; position: relative;">\
+											<img class="botonesInteractivos grow boton_actividad_completada actividad_deshabilitada" id_actividad="'+id_actividad+'" onclick="consulta_ejercicio(\''+id_actividad+'\', 1)" title="'+array_idioma['html_contenidos_Comprobada_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_nota_g.png" style="width: auto; height: 36px;">\
+											\
+											<span class="nota_actividad actividad_deshabilitada" id_actividad="'+id_actividad+'" style="position: absolute;  top: calc(50% - 12px); font-weight: 700; font-family: \'Montserrat\';  font-size: 21px; right: 14px;pointer-events: none;">-</span>\
+										</div>\
+									</div>\
+									<div class="parte_profesor" id_actividad="'+id_actividad+'" style="display:none; position: absolute;right: 0;border: 2px solid #ede9e4;padding: 4px 15px;border-radius: 20px;">\
+										<i class="fa fa-graduation-cap" aria-hidden="true" style="position: absolute; top: -12px; right: 5px;color: #9f9c97;"></i>\
+										<img class="botonesInteractivos grow boton_asigna_actividad '+planificar_deshabilitado+'" id_actividad="'+id_actividad+'" onclick="asigna_ejercicio(\''+id_actividad+'\')" title="'+array_idioma['html_contenidos_Asignar actividad_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/'+boton_planificar+'">\
+										\
+										<img class="botonesInteractivos grow boton_actividad_pendiente_profesor actividad_deshabilitada" id_actividad="'+id_actividad+'" onclick="ver_pendientes_corregir(\''+id_actividad+'\')" title="'+array_idioma['html_contenidos_Actividades para comprobar_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_hora_g.png">\
+										\
+										<img class="botonesInteractivos boton_ver_actividad grow" id_actividad="'+id_actividad+'" onclick="ver_actividad(\''+id_actividad+'\')" title="'+array_idioma['html_contenidos_Ver actividad_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_ver.png">\
+									</div>');
+					
+					// CONSULTAMOS SI EL PROFE TIENE ACTIVA LA ACTIVIDAD, O SI LA TIENE PENDIENTE O CORREGIDA
+					$.ajax({
+						type : 'POST',
+						url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+						data : {'funcion':'consulta_actividad_multiple_activa_con_fecha', 'id_actividad': id_actividad, 'id_grupo': id_grupo_abierto, 'id_usuario': desde_seguimiento},
+						success :  function(response){
+							//console.log('activa? - '+id_actividad+' - '+response);
+							// Color si la nota no está (si tiene nota luego se pone blanco)
+							$('.nota_actividad[id_actividad='+id_actividad+']').css('color', '#8e8b86');
+							
+							// ESTADOS
+							// 0 no activa
+							// 1 activa y no realizada
+							// 2 pendiente corregir
+							// 3 corregida
+							if(response == 0){
+								// no hacemos nada pues ya está deshabilitado por defecto
+							}
+							else if(response.startsWith("1#")){
+								$('.parte_alumno[id_actividad='+id_actividad+']').css('top', '-17px');
+								$('.tope_alumno[id_actividad='+id_actividad+']').show();
+
+								var array_resp = response.split('#');
+								if(array_resp[1] == null || array_resp[1] == ''){
+									$('.tope_alumno[id_actividad='+id_actividad+']').html('<span>Sin fecha límite de entrega</span>');
+								}
+								else{
+									$('.tope_alumno[id_actividad='+id_actividad+']').html('<span>Realizable hasta <b>'+array_resp[1]+'</b></span>');
+								}
+								
+								$('.boton_realiza_actividad[id_actividad='+id_actividad+']').removeClass('actividad_deshabilitada');
+								$('.boton_realiza_actividad[id_actividad='+id_actividad+']').attr('src', '/contenidos_html/1/texto/fp/grado_medio/fol/img/b_escribe.png');
+							}
+							else if(response == 2){
+								$('.boton_actividad_pendiente_alumno[id_actividad='+id_actividad+']').removeClass('actividad_deshabilitada');
+								$('.boton_actividad_pendiente_alumno[id_actividad='+id_actividad+']').attr('src', '/contenidos_html/1/texto/fp/grado_medio/fol/img/b_hora.png');
+							}
+							else if(response.startsWith("3#")){
+								var array_resp = response.split('#');
+								$('.nota_actividad[id_actividad='+id_actividad+']').css('color', 'white');
+								$('.boton_actividad_completada[id_actividad='+id_actividad+']').removeClass('actividad_deshabilitada');
+								$('.boton_actividad_completada[id_actividad='+id_actividad+']').attr('src', '/contenidos_html/1/texto/fp/grado_medio/fol/img/b_nota.png');
+								$('.nota_actividad[id_actividad='+id_actividad+']').removeClass('actividad_deshabilitada');
+								$('.nota_actividad[id_actividad='+id_actividad+']').html(array_resp[1]);
+							}
+							
+							$('.parte_alumno[id_actividad='+id_actividad+']').show();
+							$('.parte_profesor[id_actividad='+id_actividad+']').show();
+						}
+					});
+					
+					// CONSULTAMOS SI TIENE PENDIENTES DE CORREGIR
+					$.ajax({
+						type : 'POST',
+						url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+						data : {'funcion':'consulta_actividad_multiple_pendientes_corregir', 'id_actividad': id_actividad, 'id_grupo': id_grupo_abierto},
+						success :  function(response){
+							// ESTADOS
+							// 0 no pendientes
+							// 1 pendientes
+							if(response == 0){
+								// no hacemos nada pues ya está deshabilitado por defecto
+							}
+							else if(response == 1){
+								$('.boton_actividad_pendiente_profesor[id_actividad='+id_actividad+']').removeClass('actividad_deshabilitada');
+								$('.boton_actividad_pendiente_profesor[id_actividad='+id_actividad+']').attr('src', '/contenidos_html/1/texto/fp/grado_medio/fol/img/b_hora.png');
+							}
+						}
+					});
+				}
+			});
+		}
+		// Si es grupo provisional todo deshabilitado menos el ojo
+		else{
+			// PONEMOS LOS BOTONES 
+			$('.actividad_libro[id_actividad='+id_actividad+']').html(
+							'<div class="parte_alumno" id_actividad="'+id_actividad+'" style="position: absolute;right: 155px;border: 2px solid #ede9e4;padding: 4px 15px;border-radius: 20px;">\
+								<i class="fa fa-user" aria-hidden="true" style="position: absolute; top: -12px; right: 10px;color: #9f9c97;"></i>\
+								\
+								<img class="botonesInteractivos grow boton_realiza_actividad actividad_deshabilitada" id_actividad="'+id_actividad+'" title="'+array_idioma['html_contenidos_Realizar actividad_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_escribe_g.png">\
+								\
+								<img class="botonesInteractivos grow boton_actividad_pendiente_alumno actividad_deshabilitada" id_actividad="'+id_actividad+'" title="'+array_idioma['html_contenidos_Pendiente de comprobar_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_hora_g.png">\
+								\
+								<div style="display: inline-block; position: relative;">\
+									<img class="botonesInteractivos grow boton_actividad_completada actividad_deshabilitada" id_actividad="'+id_actividad+'" title="Comprobada" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_nota_g.png" style="width: auto; height: 36px;">\
+									\
+									<span class="nota_actividad actividad_deshabilitada" id_actividad="'+id_actividad+'" style="position: absolute;  top: calc(50% - 12px); font-weight: 700; font-family: \'Montserrat\';  font-size: 21px; right: 14px;pointer-events: none;">-</span>\
+								</div>\
+							</div>\
+							<div class="parte_profesor" id_actividad="'+id_actividad+'" style="position: absolute;right: 0;border: 2px solid #ede9e4;padding: 4px 15px;border-radius: 20px;">\
+								<i class="fa fa-graduation-cap" aria-hidden="true" style="position: absolute; top: -12px; right: 5px;color: #9f9c97;"></i>\
+								<img class="botonesInteractivos grow boton_asigna_actividad actividad_deshabilitada" id_actividad="'+id_actividad+'" title="'+array_idioma['html_contenidos_Asignar actividad_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_reunion_g.png">\
+								\
+								<img class="botonesInteractivos grow boton_actividad_pendiente_profesor actividad_deshabilitada" id_actividad="'+id_actividad+'" title="'+array_idioma['html_contenidos_Actividades para comprobar_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_hora_g.png">\
+								\
+								<img class="botonesInteractivos boton_ver_actividad grow" id_actividad="'+id_actividad+'" onclick="ver_actividad(\''+id_actividad+'\')" title="'+array_idioma['html_contenidos_Ver actividad_php']+'" src="/contenidos_html/1/texto/fp/grado_medio/fol/img/b_ver.png">\
+							</div>');
+		}
+	}
+}
+
+
+/************PLANIFICAR******************/
+// Abrir modal planificación
+function asigna_ejercicio(id_actividad) {
+	if(id_actividad != 0 && Number.isInteger(parseInt(id_actividad))){
+		if(!$('.boton_asigna_actividad[id_actividad='+id_actividad+']').hasClass('actividad_deshabilitada')){
+			// Aquí la actividad o no está asignada aún o está asignada a algunos alumnos individualmente pero no a todos
+			id_actividad_planificando = id_actividad;
+			
+			var d = new Date();
+			$('#dateIniPlanif').val(('0' + d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear()+' '+('0' + d.getHours()).slice(-2)+':'+('0' + d.getMinutes()).slice(-2));
+			$('#dateFinPlanif').val('');
+			
+			$('#parte_asignar').show();
+			$('#parte_ya_asignado_total').hide();
+			
+			$('#boton_asignar').show();
+			
+			// Cargar grupos trabajo MODAL PLANIFICACION
+			$('#div_lista_grupos_trabajo').load('/html/1/grupos_trabajo/grupos_trabajo.php');
+			
+			// Consultamos si no ha sido planificada o si ha sido a algunos alumnos
+			$.ajax({
+				type : 'POST',
+				url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+				data : {'funcion':'consulta_planificacion_realizada_actividad', 'id_actividad': id_actividad_planificando, 'id_grupo': id_grupo_abierto},
+				success :  function(response){
+					// POSIBLES ESTADOS FUNCIÓN:
+					/*****************************/
+					// no_planificado
+					// alumnos
+					// grupos_trabajo
+					
+					// Está planificado a algunos alumnos pero no a todos
+					if(response == 'alumnos'){
+						// Consultamos los usuarios que tienen planificaciones ya activas para deshabilitarlos en el modal
+						$.ajax({
+							type : 'POST',
+							url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+							data : {'funcion':'consulta_usuarios_planificacion_actividad_multiple', 'id_actividad': id_actividad_planificando, 'id_grupo': id_grupo_abierto},
+							success :  function(response2){
+								$('.boton_ya_planificado').removeClass('boton_ya_planificado');
+								$('.boton_selec').removeClass('boton_selec');
+								
+								$('#boton_individual').addClass('boton_selec');
+								$('#boton_en_grupos').addClass('boton_ya_planificado');
+								$('#nota_forma').show();
+								$('#nota_forma_grupos_trabajo').hide();
+								
+								$('#asignar_individual_a').show();
+								
+								$('#boton_toda').addClass('boton_ya_planificado');
+								$('#boton_alumnos').addClass('boton_selec');
+								$('#nota_no_planificable').show();
+								
+								$('#div_selecciona_grupos').hide();
+								$('#div_selecciona_alumnos').show();
+								
+								if(response2 != ''){
+									var listaUsus = JSON.parse(response2);
+									for (var i = 0; i < listaUsus.length; i++){
+										$('.boton_alumno[id_usuario='+listaUsus[i]+']').addClass('boton_ya_planificado');
+									}
+								}
+								
+								$('#modalPlanificar').modal({backdrop: 'static', keyboard: false});
+							}
+						});
+					}
+					// Está planificado a grupos de trabajo pero hay alumnos nuevos sin grupo de trabajo desde que se planifico
+					else if(response == 'grupos_trabajo'){
+						// Consultamos los usuarios que tienen planificaciones ya activas para deshabilitarlos en el modal
+						$.ajax({
+							type : 'POST',
+							url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+							data : {'funcion':'consulta_usuarios_planificacion_actividad_multiple', 'id_actividad': id_actividad_planificando, 'id_grupo': id_grupo_abierto},
+							success :  function(response2){
+								$('.boton_ya_planificado').removeClass('boton_ya_planificado');
+								$('.boton_selec').removeClass('boton_selec');
+								
+								$('#boton_individual').addClass('boton_selec');
+								$('#boton_en_grupos').addClass('boton_ya_planificado');
+								$('#nota_forma').hide();
+								$('#nota_forma_grupos_trabajo').show();
+								
+								$('#asignar_individual_a').show();
+								
+								$('#boton_toda').addClass('boton_ya_planificado');
+								$('#boton_alumnos').addClass('boton_selec');
+								$('#nota_no_planificable').show();
+								
+								$('#div_selecciona_grupos').hide();
+								$('#div_selecciona_alumnos').show();
+								
+								if(response2 != ''){
+									var listaUsus = JSON.parse(response2);
+									for (var i = 0; i < listaUsus.length; i++){
+										$('.boton_alumno[id_usuario='+listaUsus[i]+']').addClass('boton_ya_planificado');
+									}
+								}
+								
+								$('#modalPlanificar').modal({backdrop: 'static', keyboard: false});
+							}
+						});
+					}
+					// Si estamos aqui es porque no está planificado aún y mostramos el modal en estado base
+					else {
+						$('.boton_ya_planificado').removeClass('boton_ya_planificado');
+						$('.boton_selec').removeClass('boton_selec');
+						
+						$('#nota_forma').hide();
+						$('#nota_forma_grupos_trabajo').hide();
+						
+						$('#asignar_individual_a').hide();
+						
+						$('#nota_no_planificable').hide();
+						
+						$('#div_selecciona_grupos').hide();
+						$('#div_selecciona_alumnos').hide();
+						
+						$('#modalPlanificar').modal({backdrop: 'static', keyboard: false});
+					}
+				}
+			});
+		}
+		else{
+			// Aquí la actividad ya está asignada a toda la clase (ya sea individualmente o por grupos de trabajo)
+			$('#parte_asignar').hide();
+			$('#parte_ya_asignado_total').show();
+			
+			$('#div_selecciona_grupos').hide();
+			$('#div_selecciona_alumnos').hide();
+			
+			$('#boton_asignar').hide();
+			
+			$('#modalPlanificar').modal({backdrop: 'static', keyboard: false});
+		}
+		
+		// Ponemos el cargando en el histórico de planificaciones del grupo en la unidad actual
+		$('#lista_actividades_asignadas').html('<div style="margin-top:20px">\
+													<div class="features_items">\
+														<div id="circularG">\
+															<div id="circularG_1" class="circularG"></div>\
+															<div id="circularG_2" class="circularG"></div>\
+															<div id="circularG_3" class="circularG"></div>\
+															<div id="circularG_4" class="circularG"></div>\
+															<div id="circularG_5" class="circularG"></div>\
+															<div id="circularG_6" class="circularG"></div>\
+															<div id="circularG_7" class="circularG"></div>\
+															<div id="circularG_8" class="circularG"></div>\
+														</div>\
+														<div class="row text-center" style="margin-top:10px">\
+															<div class="col-xs-12  text-center">\
+																<span  style="font-weight: 700; font-family: \'Montserrat\';">'+array_idioma['menu_base_header_CARGANDO_x']+'</span>\
+															</div>\
+														</div>\
+													</div>\
+												</div>');
+		// Consultamos las planificaciones existentes del grupo para mostrarlas
+		$.ajax({
+			type : 'POST',
+			url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+			data : {'funcion':'consulta_historial_planificaciones_actividad_multiple', 'id_grupo': id_grupo_abierto, 'id_capitulo': id_capitulo_abierto},
+			success :  function(response2){
+				$('#lista_actividades_asignadas').empty();
+				if(response2 != ''){
+					var hoy = new Date();
+					var listaPlanif = JSON.parse(response2);
+					for (var i = 0; i < listaPlanif.length; i++){
+						var ini = new Date(listaPlanif[i]['fecha_inicio']);
+						var ini_str = ("0" +ini.getDate()).slice(-2)+'/'+("0" + (ini.getMonth()+1)).slice(-2)+'/'+ini.getFullYear()+' '+("0" + ini.getHours()).slice(-2)+':'+("0" + ini.getMinutes()).slice(-2);
+						
+						var activa = 'actividad_finalizada';
+						var display_asig = 'style="display:none;"';
+						if(listaPlanif[i]['fecha_fin'] == null || hoy < new Date(listaPlanif[i]['fecha_fin'])){
+							activa = '';
+							display_asig = '';
+						}
+						
+						var fin_str = ''+array_idioma['html_contenidos_(Sin fecha tope)_x_php']+'';
+						var fin_str_edit = '0';
+						if(listaPlanif[i]['fecha_fin'] != null){
+							var fin = new Date(listaPlanif[i]['fecha_fin']);
+							fin_str = '- '+("0" +fin.getDate()).slice(-2)+'/'+("0" + (fin.getMonth()+1)).slice(-2)+'/'+fin.getFullYear()+' '+("0" + fin.getHours()).slice(-2)+':'+("0" + fin.getMinutes()).slice(-2);
+							fin_str_edit = ("0" +fin.getDate()).slice(-2)+'/'+("0" + (fin.getMonth()+1)).slice(-2)+'/'+fin.getFullYear()+' '+("0" + fin.getHours()).slice(-2)+':'+("0" + fin.getMinutes()).slice(-2);
+						}
+						var asig_a = '';
+						if(listaPlanif[i]['alumnos_sueltos'] == 1){
+							asig_a = ''+array_idioma['html_contenidos_De forma individual - (A estudiantes sueltos)_php']+'';
+						}
+						else if(listaPlanif[i]['grupos_trabajo'] == 1){
+							asig_a = ''+array_idioma['html_contenidos_En grupos de trabajo_x_php']+'';
+						}
+						else{
+							asig_a = ''+array_idioma['html_contenidos_De forma individual - (A todo el grupo)_php']+'';
+						}
+						
+						$('#lista_actividades_asignadas').append('<div class="actividad_asignada '+activa+'" id_plan="'+listaPlanif[i]['id']+'" fi="'+ini_str+'" ff="'+fin_str_edit+'" '+display_asig+'>\
+																	<i class="fa fa-trash" aria-hidden="true" title="'+array_idioma['html_contenidos_Elimina asignación_php']+'" style="POSITION: absolute;right: 10px; color: red; cursor: pointer; font-size: 20px;" onclick="elimina_planificacion('+listaPlanif[i]['id']+')"></i>\
+																	<i class="fa fa-pencil-square-o" aria-hidden="true" title="'+array_idioma['html_contenidos_Modifica asignación_php']+'" style="POSITION: absolute; right: 33px; color: #8e6415; cursor: pointer; font-size: 20px; top: 9px;" onclick="edita_planificacion('+listaPlanif[i]['id']+')"></></i>\
+																	<p class="titulo_actividad">'+listaPlanif[i]['nombre']+'</p>\
+																	<p class="asignada_a" style="margin-top: 10px;">'+asig_a+'</p>\
+																	<p class="periodo_actividad">'+ini_str+' '+fin_str+'</p>\
+																</div>');
+						
+					}
+				}
+				else{
+					$('#lista_actividades_asignadas').html('<p style="padding-top: 144px; color: lightgray; font-weight: 700; font-size: 20px;">'+array_idioma['html_contenidos_Sin asignaciones_php']+'</p>');
+				}
+			}
+		});
+	}
+}
+// Guardar Planificación (DESDE EL MODAL)
+function asigna_ejercicio_fin(){
+	var correcto = false;
+	var fecha_ini = $('#dateIniPlanif').val();
+	var fecha_ini_date = '';
+	var fecha_ini_str = '';
+	var fecha_tope = $('#dateFinPlanif').val();
+	var fecha_tope_str = ''
+	var fecha_tope_date = '';
+	var a_grupo = 0;
+	var grupos_trabajo = '';
+	var se_guarda_en_grupos_trabajo = false;
+	var alumnos = '';
+	
+	if(fecha_ini == ''){
+		alert(array_idioma['html_contenidos_Debes seleccionar la fecha de inicio de la actividad_php']);
+		return false;
+	}
+	else{
+		var fecha_hora = fecha_ini.split(' ');
+		var fecha = fecha_hora[0].split('/');
+		var hora_minutos = fecha_hora[1].split(':');
+		fecha_ini_str = ('0' + fecha[0]).slice(-2)+'/'+('0'+fecha[1]).slice(-2)+'/'+fecha[2]+' '+('0' + hora_minutos[0]).slice(-2)+':'+('0' + hora_minutos[1]).slice(-2);
+		fecha_ini_date = new Date(fecha[2], parseInt(fecha[1])-1, fecha[0], hora_minutos[0], hora_minutos[1]);
+	}
+	
+	if(fecha_tope != ''){
+		var fecha_hora = fecha_tope.split(' ');
+		var fecha = fecha_hora[0].split('/');
+		var hora_minutos = fecha_hora[1].split(':');
+		fecha_tope_str = ('0' + fecha[0]).slice(-2)+'/'+('0'+(parseInt(fecha[1]))).slice(-2)+'/'+fecha[2]+' '+('0' + hora_minutos[0]).slice(-2)+':'+('0' + hora_minutos[1]).slice(-2);
+		fecha_tope_date = new Date(fecha[2], parseInt(fecha[1])-1, fecha[0], hora_minutos[0], hora_minutos[1]);
+	}
+	
+	if(fecha_tope_date != '' && fecha_ini_date >= fecha_tope_date){
+		alert(array_idioma['html_contenidos_La fecha tope debe ser mayor a la fecha inicio_php']);
+		return;
+	}
+
+	if($('#boton_individual').hasClass('boton_selec')){
+		if($('#boton_toda').hasClass('boton_selec')){
+			correcto = true;
+			a_grupo = 1;
+		}
+		else if($('#boton_alumnos').hasClass('boton_selec')){
+			$('.boton_alumno').each(function(){
+				if($(this).hasClass('boton_selec')){
+					correcto = true;
+					if(alumnos != ''){
+						alumnos += ',';
+					}
+					alumnos += $(this).attr('id_usuario');
+				}
+			});
+			
+			if(correcto == false){
+				alert(array_idioma['html_contenidos_Debes seleccionar al menos un estudiante_php']);
+				return false;
+			}
+		}
+		else{
+			alert(array_idioma['html_contenidos_Debes seleccionar a quién asignas la actividad_php']);
+			return false;
+		}
+	}
+	else if($('#boton_en_grupos').hasClass('boton_selec')){
+		// Comprobamos los grupos
+		comprueba_grupos();
+	
+		if(gfinal != ''){
+			se_guarda_en_grupos_trabajo = true;
+			$.ajax({
+				type : 'POST',
+				url  : '/php/1/grupos_trabajo/grupos_trabajo.php',
+				data : {'funcion': "guarda_grupos_trabajo", 'id_grupo': id_grupo_abierto, 'id_libro':id_libro_abierto, 'str_grupos':gfinal},
+				success :  function(resultado){
+					console.log(resultado);
+					if(resultado == ''){
+						alert(array_idioma['modal_ejercicios_Error al guardar_x_php']);
+						return false;
+					}
+					else if(resultado.startsWith('Error')){
+						alert(resultado);
+						return false;
+					}
+					else{
+						if(Number.isInteger(parseInt(resultado))){
+							grupos_trabajo = resultado;
+							guarda_ajax_planificacion(fecha_ini_str, fecha_tope_str, a_grupo, alumnos, grupos_trabajo);
+						}
+						else{
+							alert(array_idioma['modal_ejercicios_Error al guardar_x_php']);
+							return false;
+						}
+					}
+				}
+			});
+		}
+		else{
+			return false;
+		}
+	}
+	else{
+		alert(array_idioma['html_contenidos_Debes seleccionar de que forma se realizará la actividad_php']);
+		return false;
+	}
+
+	// Si llegamos aqui está bien
+	// Guardamos planificación siempre que no sea de grupos trabajo (se habrá lanzado antes a guardar)
+	if(se_guarda_en_grupos_trabajo == false){
+		guarda_ajax_planificacion(fecha_ini_str, fecha_tope_str, a_grupo, alumnos, grupos_trabajo);
+	}
+}
+// Ajax guardar planificación
+function guarda_ajax_planificacion(fecha_ini_str, fecha_tope_str, a_grupo, alumnos, grupos_trabajo){
+	$.ajax({
+		type : 'POST',
+		url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+		data : {'funcion':'guarda_planificacion_actividad_multiple', 'id_actividad': id_actividad_planificando, 'id_grupo': id_grupo_abierto, 'id_libro':id_libro_abierto, 'id_capitulo':id_capitulo_abierto, 'fecha_ini':fecha_ini_str, 'fecha_tope':fecha_tope_str, 'a_grupo': a_grupo, 'alumnos': alumnos, 'grupos_trabajo':grupos_trabajo},
+		success :  function(response){
+			if(response != 'ok'){
+				alert(response);
+			}
+			else{
+				actualiza_botones_actividad(id_actividad_planificando, 0);
+				alert(array_idioma['html_contenidos_Actividad asignada_x_php']);
+				$('#modalPlanificar').modal('hide');
+			}
+		}
+	});
+}
+// Borrar Planificación
+function elimina_planificacion(id_planif){
+	// Consultamos si la actividad planificada ha sido realizada por alguien en cuyo caso no se podria eliminar
+	$.ajax({
+		type : 'POST',
+		url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+		data : {'funcion':'consulta_planificacion_realizada_usuarios', 'id_planificacion': id_planif},
+		success :  function(response){
+			// Alguien la ha hecho
+			if(response == '1'){
+				alert(array_idioma['html_contenidos_Alguien ha realizado ya la actividad asignada por lo que no se puede eliminar la asignación_x_php']);
+			}
+			// Nadie la ha hecho por lo que confirmamos si se elimina
+			else {
+				var r = confirm(array_idioma['html_contenidos_¿Estás seguro/a que quieres eliminar la asignación?_x_php']);
+				if (r == true) {
+					$.ajax({
+						type : 'POST',
+						url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+						data : {'funcion':'elimina_planificacion', 'id_planificacion': id_planif},
+						success :  function(response){
+							if(response.startsWith('ok')){
+								$('.actividad_asignada[id_plan='+id_planif+']').remove();
+								var id_act_desplanificada = response.substring(2);
+								actualiza_botones_actividad(id_act_desplanificada, 0);
+								alert(array_idioma['html_contenidos_Asignación eliminada_x_php']);
+								$('#modalPlanificar').modal('hide');
+							}
+							else{
+								alert(array_idioma['html_contenidos_Error al eliminar:_x_php']);
+							}
+						}
+					});
+				} 
+			}
+		}
+	});
+}
+// Editar Planificación
+function edita_planificacion(id_planif){
+	id_planificacion_editando = id_planif;
+	
+	var tit_editando = $('.actividad_asignada[id_plan='+id_planif+'] .titulo_actividad').text();
+	var asignada_a_editando = $('.actividad_asignada[id_plan='+id_planif+'] .asignada_a').text();
+	var fi = $('.actividad_asignada[id_plan='+id_planif+']').attr('fi');
+	var ff = $('.actividad_asignada[id_plan='+id_planif+']').attr('ff');
+	
+	$('#dateIniEditPlanif').val(fi);
+	if(ff != '0'){
+		$('#dateFinEditPlanif').val(ff);
+	}
+	else{
+		$('#dateFinEditPlanif').val('');
+	}
+	$('#titulo_act_editar').text(tit_editando);
+	$('#asignada_act_editar').text(asignada_a_editando);
+	
+	$('#modalEditarPlanificacion').modal({backdrop: 'static', keyboard: false});
+}
+function modifica_asignacion_fin(){
+	var fecha_ini = $('#dateIniEditPlanif').val();
+	var fecha_ini_date = '';
+	var fecha_ini_str = '';
+	var fecha_tope = $('#dateFinEditPlanif').val();
+	var fecha_tope_str = ''
+	var fecha_tope_date = '';
+	
+	if(fecha_ini == ''){
+		alert(array_idioma['html_contenidos_Debes seleccionar la fecha de inicio de la actividad_php']);
+		return false;
+	}
+	else{
+		var fecha_hora = fecha_ini.split(' ');
+		var fecha = fecha_hora[0].split('/');
+		var hora_minutos = fecha_hora[1].split(':');
+		fecha_ini_str = ('0' + fecha[0]).slice(-2)+'/'+('0'+fecha[1]).slice(-2)+'/'+fecha[2]+' '+('0' + hora_minutos[0]).slice(-2)+':'+('0' + hora_minutos[1]).slice(-2);
+		fecha_ini_date = new Date(fecha[2], parseInt(fecha[1])-1, fecha[0], hora_minutos[0], hora_minutos[1]);
+	}
+	
+	if(fecha_tope != ''){
+		var fecha_hora = fecha_tope.split(' ');
+		var fecha = fecha_hora[0].split('/');
+		var hora_minutos = fecha_hora[1].split(':');
+		fecha_tope_str = ('0' + fecha[0]).slice(-2)+'/'+('0'+(parseInt(fecha[1]))).slice(-2)+'/'+fecha[2]+' '+('0' + hora_minutos[0]).slice(-2)+':'+('0' + hora_minutos[1]).slice(-2);
+		fecha_tope_date = new Date(fecha[2], parseInt(fecha[1])-1, fecha[0], hora_minutos[0], hora_minutos[1]);
+	}
+	
+	if(fecha_tope_date != '' && fecha_ini_date >= fecha_tope_date){
+		alert(array_idioma['html_contenidos_La fecha tope debe ser mayor a la fecha inicio_php']);
+		return;
+	}
+
+	// Si llegamos aqui está bien
+	// Modificamos planificación
+	$.ajax({
+		type : 'POST',
+		url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+		data : {'funcion':'edita_planificacion_actividad_multiple', 'id_planificacion':id_planificacion_editando, 'fecha_ini':fecha_ini_str, 'fecha_tope':fecha_tope_str},
+		success :  function(response){
+			console.log(response);
+			if(response.startsWith('ok')){
+				// Editamos fechas en el div de las asignaciones actuales y miramos si ahora es o ha dejado de ser una asignación finalizada
+				$('.actividad_asignada[id_plan='+id_planificacion_editando+']').attr('fi', fecha_ini_str);
+				
+				// Tiene fecha tope
+				if(fecha_tope_str != ''){
+					$('.actividad_asignada[id_plan='+id_planificacion_editando+']').attr('ff', fecha_tope_str);
+					$('.actividad_asignada[id_plan='+id_planificacion_editando+'] .periodo_actividad').text(fecha_ini_str+' - '+fecha_tope_str);
+					
+					var hoy = new Date();
+					// Aún activa
+					if(hoy < fecha_tope_date){
+						$('.actividad_asignada[id_plan='+id_planificacion_editando+']').removeClass('actividad_finalizada');
+						$('.actividad_asignada[id_plan='+id_planificacion_editando+']').show();
+					}
+					// Finalizada
+					else{
+						$('.actividad_asignada[id_plan='+id_planificacion_editando+']').addClass('actividad_finalizada');
+						
+						// Si estamos mostrando las finalizadas (check marcado)
+						if($('#check_mostrar_planificaciones_finalizadas').is(":checked")) {
+							$('.actividad_asignada[id_plan='+id_planificacion_editando+']').show();
+						}
+						// Finalizada oculta
+						else{
+							$('.actividad_asignada[id_plan='+id_planificacion_editando+']').hide();
+						}
+					}
+				}
+				// No tiene fecha tope
+				else{
+					$('.actividad_asignada[id_plan='+id_planificacion_editando+']').removeClass('actividad_finalizada');
+					$('.actividad_asignada[id_plan='+id_planificacion_editando+']').show();
+					
+					$('.actividad_asignada[id_plan='+id_planificacion_editando+']').attr('ff', 0);
+					$('.actividad_asignada[id_plan='+id_planificacion_editando+'] .periodo_actividad').text(fecha_ini_str+' '+array_idioma['html_contenidos_(Sin fecha tope)_x_php']+'');
+				}
+				
+				// Actualizamos botones de la actividad
+				var id_act_editada = response.substring(2);
+				actualiza_botones_actividad(id_act_editada, 0);
+				
+				alert(array_idioma['html_contenidos_Asignación modificada_x_php']);
+				
+				// Ocultamos modal
+				$('#modalEditarPlanificacion').modal('hide');
+			}
+			else{
+				alert(array_idioma['html_contenidos_Error al modificar:_x_php']);
+			}
+		}
+	});
+}
+
+
+/**********VER ACTIVIDAD PROFE (PLANTILLA)***************/
+function ver_actividad(id_actividad){
+	if(id_actividad != 0 && Number.isInteger(parseInt(id_actividad))){
+		id_actividad_libro_realizando = id_actividad;
+		$('#contenedor0').load('/html/1/actividades/actividades_libro.php', {"ver_actividad": 1});
+	}
+}
+
+/************VER PENDIENTES CORREGIR******************/
+function ver_pendientes_corregir(id_actividad){
+	//if(!$('.boton_actividad_pendiente_profesor[id_actividad='+id_actividad+']').hasClass('actividad_deshabilitada')){
+	if(id_actividad != 0 && Number.isInteger(parseInt(id_actividad))){	
+		id_actividad_libro_realizando = id_actividad;
+		$('#contenedor0').load('/html/1/actividades/asignaciones_actividades.php');
+	}
+}
+
+/**********REALIZAR ACTIVIDAD ALUMNO***************/
+function realiza_ejercicio(id){
+	if(desde_seguimiento == 0){
+		if(!$('.boton_realiza_actividad[id_actividad='+id+']').hasClass('actividad_deshabilitada')){
+			if(guardar_interacciones){
+				vacia_variables();
+				accion_interaccion = 'BIBLIOTECA_REALIZAR_ACTIVIDAD';
+				id_libro_interaccion = id_libro_abierto;
+				id_capitulo_interaccion = id_capitulo_abierto;
+				id_actividad_interaccion = id;
+				guarda_interaccion();
+			}
+			
+			id_actividad_libro_realizando = id;
+			$('#contenedor0').load('/html/1/actividades/actividades_libro.php');
+		}
+	}
+	else{
+		alert(array_idioma['html_contenidos_No puedes realizar la actividad dentro del libro de un estudiante_js']);
+	}
+}
+
+/**********VER ACTIVIDAD CONTESTADA ALUMNO***************/
+function consulta_ejercicio(id, desde_corregida){
+	if(desde_corregida == 0){
+		if(!$('.boton_actividad_pendiente_alumno[id_actividad='+id+']').hasClass('actividad_deshabilitada')){
+			if(guardar_interacciones){
+				vacia_variables();
+				accion_interaccion = 'BIBLIOTECA_VER_ACTIVIDAD_PENDIENTE_CORREGIR';
+				id_libro_interaccion = id_libro_abierto;
+				id_capitulo_interaccion = id_capitulo_abierto;
+				id_actividad_interaccion = id;
+				guarda_interaccion();
+			}
+			
+			id_actividad_libro_realizando = id;
+			$('#contenedor0').load('/html/1/actividades/actividades_libro.php', {"consultando": 1, "id_usuario":desde_seguimiento});
+		}
+	}
+	else{
+		if(!$('.boton_actividad_completada[id_actividad='+id+']').hasClass('actividad_deshabilitada')){
+			if(guardar_interacciones){
+				vacia_variables();
+				accion_interaccion = 'BIBLIOTECA_VER_ACTIVIDAD_CORREGIDA';
+				id_libro_interaccion = id_libro_abierto;
+				id_capitulo_interaccion = id_capitulo_abierto;
+				id_actividad_interaccion = id;
+				guarda_interaccion();
+			}
+			
+			id_actividad_libro_realizando = id;
+			$('#contenedor0').load('/html/1/actividades/actividades_libro.php', {"consultando": 1, "id_usuario":desde_seguimiento});
+		}
+	}
+}
+
+
+/************CUESTIONARIOS******************/
+// guardar contestación cuestionario
+function guardar_cuestionario(id_cuestionario){
+	if(desde_seguimiento == 0){
+		if(guardando_cuestionario == false){
+			if(es_grupo_provisional == 0){
+				
+				if(guardar_interacciones){
+					vacia_variables();
+					accion_interaccion = 'BIBLIOTECA_GUARDA_CUESTIONARIO';
+					id_libro_interaccion = id_libro_abierto;
+					id_capitulo_interaccion = id_capitulo_abierto;
+					mas_info = 'id:'+id_cuestionario;
+					guarda_interaccion();
+				}
+				
+				guardando_cuestionario = true;
+				
+				var tipo = $('#cuestionario_'+id_cuestionario).attr('tipo');
+				
+				var contestacion = '';
+				if(tipo == 'desarrollo'){
+					contestacion = $('#cuestionario_'+id_cuestionario).val();
+				}
+				else if(tipo == 'tabla'){
+					$('#cuestionario_'+id_cuestionario+' .td_tabla_seleccionado').each(function(){
+						if(contestacion != ''){
+							contestacion += '#';
+						}
+						contestacion += $(this).attr('id');
+					});
+				}
+				
+				$.ajax({
+					type : 'POST',
+					url  : '/../../../php/1/html_contenidos/html_contenidos.php',
+					data : {'funcion':'guarda_cuestionario', 'id_cuestionario': id_cuestionario, 'contestacion': contestacion, 'id_grupo': id_grupo_abierto},
+					success :  function(response){
+						if(response != 'ok'){
+							alert(response);
+						}
+						else{
+							alert(array_idioma['html_contenidos_Guardado correctamente_x_php']);
+						}
+						guardando_cuestionario = false;
+					}
+				});
+				
+				$('.texto_oculto_cuestionario[id_cuestionario='+id_cuestionario+']').show();
+			}
+			else if(es_grupo_provisional == 1){
+				alert(array_idioma['html_contenidos_No puedes guardar ya que no estás asignado a ningún grupo_x_php']);
+			}
+			else{
+				alert(array_idioma['html_contenidos_Espera unos segundos y vuelve a intentarlo_x_php']);
+			}
+		}
+		else{
+			alert(array_idioma['html_contenidos_Espera unos segundos y vuelve a intentarlo_x_php']);
+		}
+	}
+	else{
+		alert(array_idioma['html_contenidos_No puedes guardar dentro del libro de un estudiante_js']);
+	}
+}

@@ -1,0 +1,1029 @@
+﻿html body{
+	width: 100%;
+	margin: 0 !important;
+	padding: 0 !important;
+	background-color: white !important;
+}
+.contenedor_base{
+	display: block;
+	position: absolute;
+	/* background-color: #666; */
+	width:100%;
+	height: 100%;
+	margin: 0 !important;
+	paddibg: 0 !important;
+}
+.contenido{
+	display:block;
+	position: absolute;
+	width: 1278px;
+	height: 1278px;
+	top: 10px;
+	background-color: #fff !important;
+	left: calc((100% - 1278px)/2);
+}
+.div_contenedor{
+	width: 100%;
+}
+
+.img{
+	width: 100%;
+}
+.exclamation{
+    position:relative;
+}
+.fa_decoration{
+    color: #d84848;
+    position: absolute;
+    top: -20px;
+    right: -5px;
+    cursor: pointer;
+    font-size: 24px;
+	/*display:inline-block!important;*/
+}
+.fa_decoration_2{
+    color: #d84848;
+    cursor: pointer;
+    font-size: 24px;
+    padding: 0px 5px;
+	/*display:inline-block!important;*/
+}
+
+/**  MARCO SUPERIOR ************************/
+.tema1{
+	position: absolute;
+    top: 0px;
+    left: 21.67449%;
+	width: 12.67605%;
+	height: 14.6322379%;
+	margin: 0 2.34742% 8.68545% 0;
+	border-radius: 0% 0% 12.345679% 12.345679%;
+	background-color: #ffffff !important;
+	text-align: center !important;
+}
+.tema1 p{
+	text-align: center !important;
+	width: 60%; 
+	margin: auto;
+}
+.tema1unidad{
+	margin-top: 13.368984% !important;
+	font-family: Montserrat;
+	font-size: 100%;
+	font-weight: bold;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: normal;
+	letter-spacing: 0.23px;
+	color: #48bed8 !important;
+}
+.tema1numero{
+	margin-top: -10.69518% !important;
+	font-family: Montserrat;
+	font-size: 750%; 
+	font-weight: normal;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: normal;
+	letter-spacing: 1.91px;
+	color: #48bed8 !important;
+}
+.tema1img{
+	position: relative;
+	top: -10.69518% !important;
+}
+.parrafo1{
+	margin: 0 auto;
+	position: absolute;
+	top: 4.38184664%;
+	left: 36.6979656%;
+	right: 34.3505477%;
+	font-size: 35px;
+    font-weight: 800;
+	font-family: 'Montserrat';
+}
+/****************************************************/
+
+/**  CUADRO INDICE *********************************/
+.que_aprenderas{
+    width: 100%;
+    margin-top: 35px;
+    margin-left: 21.6%;
+}
+.indices{
+    width: 28.32%;
+    margin-top: 120px;
+	margin-left: 21.75%;
+	margin-bottom: 200px;
+}
+.subindices{
+	width: 92.54%;
+	margin-left: 4.143%;
+}
+.titulo_indice{
+	font-family: Montserrat;
+	font-size: 15px;
+	font-weight: bold;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.6;
+	letter-spacing: 0.23px;
+	color: #000000 !important;
+	text-decoration: underline;
+}
+.parrafo_indice{
+	margin: 0px;
+	font-family: Montserrat;
+	font-size: 15px;
+	font-weight: 400;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.6;
+	letter-spacing: 0.23px;
+	color: #000000 !important;
+	text-decoration: underline;
+	cursor: pointer;
+}
+.parrafo_indice:hover, .titulo_indice:hover{
+    color: #23527c!important;
+    text-decoration: underline;
+}
+.margenes_p_titulo{
+	margin-bottom: 0;
+}
+/*******************************************************/
+
+/**  CUADRO DERECHO SUPERIOR ***************************/
+.contenedor_aprende{
+	display: block;
+    position: absolute;
+	width: 27.23%;
+	height: 40.625%;
+	top: 26.68%;
+	left: 51.095462%;
+	background-color:#48bed8 !important;
+	padding: 67px 0 0;
+	border-radius: 40px;
+}
+.parrrafor_aprende{
+	font-family: Montserrat;
+	font-size: 16px;
+	font-weight: 400;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.38;
+	letter-spacing: 0.25px;
+	color: #000000 !important;
+	font-weight: bold;
+	right:305px;
+}
+.contenedor_aprende2{
+	display: block;
+    position: absolute;
+	width: 27.23%;
+	height: 32%;
+	top: 45.04%;
+	left: 51.1%;
+	background-color:#48bed8 !important;
+	padding: 47px 0 0;
+	border-radius: 40px;
+}
+.aprende_consejo{
+	width: 82.1839%;
+	margin-left: 9.77%;
+	margin-right: 8.04%;
+}
+.parrafo_aprende{
+	font-family: Montserrat;
+	font-size: 16px;
+	font-weight: 400;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.38;
+	letter-spacing: 0.25px;
+	color: #000000 !important;
+}
+.divs_bandera{
+	display: block;
+    position: absolute;
+	background-color: #f6a733 !important;
+	top: 23.3176839%;
+	left: 61.345853%;
+	right: 32.00313%;
+	padding: 25px 26px 23px 27px;
+    border-radius: 44px;
+}
+/**********************************************************/
+
+/********* CUADROS CENTRADOS ********************************/
+.tenlo_en_cuenta{
+	width: 56.73%;
+	margin-top: 35px;
+	margin-left: 21.6%;
+	border-radius: 20px;
+    background-color: #ede9e4 !important;
+	margin-bottom: 65px;
+}
+.contenido_tenloencuenta{
+	width: 92.2758%;
+	height: 50px;
+	margin-top: 10px;
+	margin-left: 3.862%;
+	font-family: Montserrat;
+	font-size: 15px;
+	font-weight: normal;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.93;
+	letter-spacing: normal;
+	color: #000000 !important;
+}
+
+
+/**************************************************************/
+
+
+
+/***************** COMUNES *************************************/
+.divs{
+	display: inline-block;
+}
+.titulos_parrafo{
+	margin: 0 auto;
+	font-family: Montserrat;
+	font-size: 20px;
+	font-weight: bold;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: normal;
+	letter-spacing: 0.31px;
+	color: #f7a833 !important;
+	margin-left: 17px;
+}
+.parrafo_empleoyredes{
+	font-family: Montserrat;
+	font-size: 40px;
+	font-weight: bold;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: normal;
+	letter-spacing: 0.63px;
+  
+}
+
+.parrafo_subiten{
+	width: 56.73%;
+	margin-top: 10px;
+	margin-left: 21.6%;
+	font-family: Montserrat;
+	font-size: 17px;
+	font-weight: 400;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.76;
+	letter-spacing: normal;
+	color: #000000 !important;
+}
+
+.titulos_subitens{
+	font-family: Montserrat;
+	font-size: 25px;
+	font-weight: bold;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: normal;
+	letter-spacing: 0.39px;
+	color: #000000 !important;
+}
+
+
+/***************************************************************/
+
+.lista_puntos{
+	width: 56.73%;
+	margin-left: 21.75%;
+	border-radius: 20px;
+	border: solid 4px #ede9e4;
+}
+.titulo_lista{
+	width: 47.31%;
+	height: 8.9655%;
+	font-family: Montserrat;
+	font-size: 18px;
+	font-weight: bold;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.61;
+	letter-spacing: normal;
+	text-align: center;
+	color: #000000 !important;
+	margin-top: 43px;
+	margin-left: 183px;
+}
+.div_contenido_lista{
+	width: 88.137%;
+	height: 55.17%;
+	margin-top: 4.55%;
+	margin-left: 8%;
+	margin-bottom: 6.986%;
+}
+.parrafo_contenido_lista{
+	font-family: Montserrat;
+	font-size: 15px;
+	font-weight: normal;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.93;
+	letter-spacing: normal;
+	color: #000000 !important;
+	height: 85px;
+}
+.f1{
+	display: block;
+    position: absolute;
+	margin-top: 5px;
+    margin-left: -20px;
+}
+
+.azulS{
+	color:#48bed8; 
+	text-decoration:underline;
+	font-weight: 700;
+	font-family: Montserrat;
+}
+.azulS:hover{
+	color:#23517c; !important;
+}
+
+.azul{
+	color:#48bed8 !important; 
+	font-weight: 700;
+	font-family: Montserrat;
+}
+.Circulo_naranja{
+	font-size: 25px;
+	background-color: orange !important;
+	/* width: fit-content; */
+	/* width: moz fit-content; */
+	color: white !important;
+	padding: 0px 15px 0px 15px;
+	border-radius: 50%;
+	font-weight: bold;
+	width: min-content;
+	
+}
+
+#table1 td, th {
+  border: solid #ede9e4;
+}
+
+#table1 {
+  border-collapse: collapse;
+}
+.separa_p{
+	margin-bottom: 35px;
+}
+
+.botonesInteractivos{
+    width: 36px;
+    padding: 0px;
+    cursor: pointer;
+    margin-bottom: 0px;
+}
+.grow { transition: all .2s ease-in-out; }
+.grow:hover { transform: scale(1.1); }
+.icono_fa{
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.trumbowyg-box, .trumbowyg-editor {
+    width: 100% !important;
+    margin: 0px auto !important;
+}
+
+.div_tarea{
+	padding: 0 0 46px;
+	border: solid 4px #ede9e4;
+	background-color: #ffffff !important;
+	max-width: 727px;
+	margin: auto;
+	margin-top: 4%;
+	margin-bottom: 4%;
+	border-radius: 25px;
+}
+.div_tarea_p2{
+	background-color: #f7a833 !important;
+    padding: 0 30px 0 33px;
+    border-radius: 33px;
+    height: 66px;
+    font-size: 17px;
+    font-weight: 800;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.71;
+    letter-spacing: normal;
+    color: #ffffff !important;
+    width: 101%;
+    margin: auto;
+    margin-top: -3%;
+    margin-bottom: 4%;
+    margin-left: -0.5%;
+}
+.p_tarea{
+	    width: 655px;
+		height: 68px;
+		margin: 21px 33px 21px 39px;
+		font-family: Montserrat;
+		font-size: 17px;
+		font-weight: bold;
+		font-stretch: normal;
+		font-style: normal; 
+		line-height: 1.71; 
+		letter-spacing: normal; 
+		color: #000000 !important; 
+}
+.tarea{
+	width: 655px;
+	margin: auto;
+	height: 216px;
+	padding: 23px 14.1px 15.1px 28px;
+	/* opacity: 0.5; */
+	border-radius: 18px;
+	background-color: #ede9e4 !important;
+	margin-left: 4.5%;
+	font-family: Montserrat;
+	font-size: 17px;
+	font-weight: bold;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: normal;
+	letter-spacing: normal;
+	/* color: #8d8882;  */
+	color: #1f0501 !important;
+	resize: none;
+}
+
+/* TOOLTIP */
+
+.tooltip {
+	position: relative;
+	display: inline;
+	opacity: 1;
+    font-size: 100%;
+	font-family: 'Montserrat';
+  }
+
+.tooltip .tooltiptext{
+	visibility: hidden;
+	width: 300px;
+  	background-color: #ffffff !important;
+  	color: #000000 !important;
+  	text-align: left;
+  	padding: 32.3px 27px 28px 25px;
+	border-radius: 6px;
+	box-shadow: 0 22px 40px 0 rgba(0, 0, 0, 0.04);
+	border: solid 6px #ede9e4;
+	margin-top: 5px;
+
+
+  	/* Position the tooltip text */
+  	position: absolute;
+  	z-index: 1;
+  	margin-left: -45px;
+
+  	/* Fade in tooltip */
+  	/* opacity: 0; */
+  	transition: opacity 0.3s;
+	font-family: Montserrat;
+    font-size: 13px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.54;
+    letter-spacing: 0.2px;
+    color: #000000 !important;
+	
+	left: calc(50% - 100px);
+    top: calc(100% + 5px);
+}
+
+/* Tooltip arrow */
+.tooltiptext:before {
+	content: '';
+	display: block;
+	position: absolute;
+	left: 50%;
+	bottom: 100%;
+	margin-left: -15px;
+	width: 0;
+	height: 0;
+	border: 20px solid transparent;
+	border-bottom-color: #ede9e4 !important;
+	border-width: 19px;
+}
+.tooltip .tooltiptext::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	margin-left: -7px;
+	border-width: 11px;
+	border-style: solid;
+	border-color: transparent transparent white transparent !important;
+	bottom: 100%;
+}
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+	opacity: 1;
+  }
+  
+  /*TOOLTIP BAJO*/
+  
+  .tooltip_bajo {
+	position: relative;
+	display: inline;
+	opacity: 1;
+    font-size: 100%;
+  }
+
+.tooltip_bajo .tooltiptext_bajo{
+	visibility: hidden;
+	width: 235px;
+  	background-color: #ffffff !important;
+  	color: #000000 !important;
+  	text-align: left;
+  	padding: 32.3px 27px 28px 25px;
+	border-radius: 6px;
+	box-shadow: 0 22px 40px 0 rgba(0, 0, 0, 0.04);
+	border: solid 6px #ede9e4;
+	margin-top: 5px;
+
+
+  	/* Position the tooltip text */
+  	position: absolute;
+  	z-index: 1;
+  	margin-left: -60px;
+
+  	/* Fade in tooltip */
+  	/* opacity: 0; */
+  	transition: opacity 0.3s;
+	font-family: Montserrat;
+    font-size: 13px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.54;
+    letter-spacing: 0.2px;
+    color: #000000 !important;
+	
+	left: calc(50% - 60px);
+    top: calc(100% + 5px);
+}
+
+/* Tooltip arrow */
+.tooltiptext_bajo:before {
+	content: '';
+    display: block;
+    position: absolute;
+    left: 50%;
+    margin-left: -24px;
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-left-color: transparent;
+    border-image: initial;
+    border-width: 19px;
+    border-bottom-color: rgb(237, 233, 228) !important;
+    bottom: -38px;
+    transform: rotate(180deg);
+}
+.tooltip_bajo .tooltiptext_bajo::after {
+	content: '';
+    position: absolute;
+    left: 50%;
+    margin-left: -15.5px;
+    border-width: 11px;
+    border-style: solid;
+    border-color: transparent transparent white !important;
+    bottom: -22px;
+    transform: rotate(180deg);
+}
+.tooltip_bajo:hover .tooltiptext_bajo {
+	visibility: visible;
+	opacity: 1;
+  }
+  
+  
+  
+  /*sinflecha*/
+  
+  .tooltip .tooltiptext_sinflecha{
+	visibility: hidden;
+	width: 235px;
+  	background-color: #ffffff !important;
+  	color: #000000 !important;
+  	text-align: left;
+  	padding: 32.3px 27px 28px 25px;
+	border-radius: 6px;
+	box-shadow: 0 22px 40px 0 rgba(0, 0, 0, 0.04);
+	border: solid 6px #ede9e4;
+	margin-top: 5px;
+
+
+  	/* Position the tooltip text */
+  	position: absolute;
+  	z-index: 1;
+  	margin-left: -60px;
+
+  	/* Fade in tooltip */
+  	/* opacity: 0; */
+  	transition: opacity 0.3s;
+	font-family: Montserrat;
+    font-size: 13px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.54;
+    letter-spacing: 0.2px;
+    color: #000000 !important;
+	
+	left: calc(50% - 60px);
+    top: calc(100% + 5px);
+}
+
+  .tooltip:hover .tooltiptext_sinflecha {
+	visibility: visible;
+	opacity: 1;
+  }
+  
+  
+  
+   /* FIN TOOLTIP BAJO*/
+  
+  
+.td_tabla_ejercicio{
+	font-family: Montserrat;
+    font-size: 14px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #000000 !important;
+    padding: 7px;
+	cursor: pointer;
+	border: solid 1px #ede9e4;
+}
+.td_tabla_ejercicio p{
+	padding-left:10px;
+	padding-top:2px;
+	padding-bottom:2px;
+	border-radius: 5.5px;
+}
+.td_tabla_ejercicio p:hover {
+	background-color:#ede9e4 !important;
+}
+.td_tabla_seleccionado{
+	background-color:#f7a833 !important;
+	color:white !important;
+}
+
+td:last-child {
+    border-right: 4px solid #ede9e4 !important;
+}
+
+td:first-child {
+    border-left: 4px solid #ede9e4 !important;
+}
+
+.ultima_fila td {
+    border-bottom: 4px solid #ede9e4;
+}
+
+.text_area_cuestionario:focus{
+	outline: none !important;
+	border:1px solid gray;
+	box-shadow: 0 0 10px #719ECE;
+}
+.tab_ejercicio{
+	border: solid 2px #ede9e4;
+	border-collapse: collapse;
+	border-radius: 20px;
+	padding: 5px;
+	text-align:center;
+	font-family: 'Montserrat';
+}
+.xdsoft_datetimepicker {
+    z-index: 99999;
+}
+
+.boton_no_selec{
+	background-color: #ede9e4 !important;
+	color: #97948f !important;
+}
+
+.boton_selec{
+	background-color: #48bed8 !important;
+	color: white !important;
+}
+
+.boton_alumno{
+    width: 200px;
+    padding: 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    display: inline-block;
+    margin: 10px;
+    cursor: pointer;
+}
+.boton_grupo{
+    width: 200px;
+    padding: 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    display: inline-block;
+    margin: 10px;
+    cursor: pointer;
+}
+
+
+	/*--- preguntas ---*/
+	
+		.pregunta {
+			margin: 10px auto;
+			background-color: white;
+			margin-bottom: 20px;
+			max-width: 900px;
+			border-radius: 20px;
+			border-radius: 20px;
+			border: solid 4px #ede9e4;
+		}
+		
+		.pregunta_corregida{
+			margin: 10px;
+			width: calc(50% - 25px);
+			display:inline-block;
+		}
+		
+		.solucion{
+			margin: 10px;
+			width: calc(50% - 25px);
+			display:inline-block;
+			vertical-align: top;
+			text-align:center;
+			background-color: white;
+			margin-bottom: 20px;
+			border-radius: 20px;
+		}
+		
+		.enunciado {
+			padding: 20px 0px;
+			font-weight: 600;
+			font-size: 17px;
+			margin: 0px 37px !important;
+			margin-top: 9px !important;
+			background-color: white !important;
+			border:none  !important;
+		}
+		
+		.respuestas {
+			margin-bottom: 38px;
+		}
+		
+		.respuesta {
+			padding: 9px 14px 9px 13px;
+			margin: 6px 37px !important;
+			border-radius: 9px !important;
+			border: solid 2px #ede9e4;
+			position: relative;
+		}
+		
+		.respuesta_marcada_temp{
+			font-weight: 700;
+			border-color:#48bed8 !important;
+			color:black !important;
+		}
+		
+		.respuestaAcertada {
+			border: 2px solid #09d409 !important;
+			background-color:#dcffd5;
+		}
+		
+		.respuestaFallada {
+			border: 2px solid #e87878 !important;
+			background-color: #ffe0e0;
+		}
+		
+		.respuestaCorrectaNoContestada {
+			border: 2px solid #09d409 !important;
+		}
+	
+		.div_checks {
+			position: absolute;
+			right: 14px;
+		}
+		
+		.div_texto_respuesta {
+			display:inline-block;
+			max-width: calc(100% - 60px);
+			padding-left: 20px;
+		}
+		
+		.radioCheck{display:inline-block;}
+		.radioCheck input[type=radio]:not(old){width:2em;margin:0;font-size:1em;opacity:0;cursor:pointer;}
+		.radioCheck input[type=radio]:not(old) + label{display:inline-block;margin-left:-2em;line-height:1.5em;cursor:pointer;}
+		.radioCheck input[type=radio]:not(old) + label > span{display:inline-block;width:1.5em;height:1.5em;border:0.0625em solid rgb(192,192,192);border-radius:0.25em;background:rgb(224,224,224);background-image:-moz-linear-gradient(rgb(240,240,240),rgb(224,224,224));background-image:-ms-linear-gradient(rgb(240,240,240),rgb(224,224,224));background-image:-o-linear-gradient(rgb(240,240,240),rgb(224,224,224));background-image:-webkit-linear-gradient(rgb(240,240,240),rgb(224,224,224));background-image:linear-gradient(rgb(240,240,240),rgb(224,224,224));vertical-align:bottom;cursor:pointer;}
+		.radioCheck input[type=radio]:not(old):checked + label > span{background-image:-moz-linear-gradient(rgb(224,224,224),rgb(240,240,240));background-image:-ms-linear-gradient(rgb(224,224,224),rgb(240,240,240));background-image:-o-linear-gradient(rgb(224,224,224),rgb(240,240,240));background-image:-webkit-linear-gradient(rgb(224,224,224),rgb(240,240,240));background-image:linear-gradient(rgb(224,224,224),rgb(240,240,240));cursor:pointer;}
+		.radioCheck input[type=radio]:not(old):checked + label > span:before{content:'✓';display:block;width:0.7em;color:rgb(153,204,102);font-size:1.5em;line-height:1em;text-align:right;text-shadow:0 0 0.0714em rgb(115,153,77);font-weight:bold;cursor:pointer;}
+
+		.radioInterr input[type=radio]:not(old){width:2em;margin:0;padding:0;font-size:1em;opacity:0;cursor:pointer;}
+		.radioInterr input[type=radio]:not(old) + label{display:inline-block;margin-left:-2em;line-height:1.5em;cursor:pointer;}
+		.radioInterr input[type=radio]:not(old) + label > span{display:inline-block;width:1.5em;height:1.5em;border:0.0625em solid rgb(192,192,192);border-radius:0.25em;background:rgb(224,224,224);background-image:-moz-linear-gradient(rgb(240,240,240),rgb(224,224,224));background-image:-ms-linear-gradient(rgb(240,240,240),rgb(224,224,224));background-image:-o-linear-gradient(rgb(240,240,240),rgb(224,224,224));background-image:-webkit-linear-gradient(rgb(240,240,240),rgb(224,224,224));background-image:linear-gradient(rgb(240,240,240),rgb(224,224,224));vertical-align:bottom;cursor:pointer;}
+		.radioInterr input[type=radio]:not(old):checked + label > span{background-image:-moz-linear-gradient(rgb(224,224,224),rgb(240,240,240));background-image:-ms-linear-gradient(rgb(224,224,224),rgb(240,240,240));background-image:-o-linear-gradient(rgb(224,224,224),rgb(240,240,240));background-image:-webkit-linear-gradient(rgb(224,224,224),rgb(240,240,240));background-image:linear-gradient(rgb(224,224,224),rgb(240,240,240));cursor:pointer;}
+		.radioInterr{display:inline-block;}
+		.radioInterr input[type=radio]:not(old):checked + label > span:before{content:'?';display:block;width:0.7em;color:orange;font-size:1.5em;line-height:1em;text-align:right;text-shadow:0 0 0.0714em rgb(115,153,77);font-weight:bold;cursor:pointer;}
+		
+		
+				
+		
+.container_input {
+  display: inline-block;
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container_input input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+  background-color: #ede9e4;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 6px;
+}
+
+/* On mouse-over, add a grey background color */
+.container_input:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container_input input:checked ~ .checkmark {
+  background-color: #48bed8;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container_input input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container_input .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+				
+.container_input2 {
+  display: inline-block;
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container_input2 input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+  background-color: #ede9e4;
+}
+
+/* Create a custom checkbox */
+.checkmark2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 6px;
+}
+
+/* On mouse-over, add a grey background color */
+.container_input2:hover input ~ .checkmark2 {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container_input2 input:checked ~ .checkmark2 {
+  background-color: #ffa50e;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark2:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container_input2 input:checked ~ .checkmark2:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container_input2 .checkmark2:after {
+  font-family: FontAwesome;
+    position: absolute;
+    left: 0;
+	content: "\f128";
+	color: white;
+    font-size: 16px;
+    padding-left: 5px;
+    margin-top: -1px;
+}
+
+
+	.icono_profe{
+		position: absolute;
+		right: 15px;
+		z-index: 9999;
+		top: 83px;
+		color: green;
+		font-size: 16px !important;
+	}
+	.icono_alumno{
+		position: absolute;
+		right: 45px;
+		z-index: 9999;
+		top: 82px;
+		color: blue;
+		font-size: 16px !important;
+	}
+
+	.ejemplo_titulo{
+	width: 696px;
+	margin-left: 21.7%;
+	font-family: Montserrat;
+	font-size: 20px;
+	letter-spacing: normal;
+	color: #000000;
+	background-color: #48bed8; 
+	border-radius: 33px;
+	height: 50px;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.45;
+	letter-spacing: normal;
+	color: #ffffff;
+	margin: auto;
+	margin-top: -3.5%;
+	margin-bottom: 6%;
+	padding-top: 1.5%; 
+	padding-left: 35px;
+
+}
+
+		

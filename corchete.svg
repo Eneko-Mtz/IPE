@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="73px" height="16px" viewBox="0 0 73 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>corchete</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0.0001 0.32235 14.631 0.32235 14.631 14.9526 0.0001 14.9526"></polygon>
+        <polygon id="path-3" points="0.0005 0.9999 6.8005 0.9999 6.8005 32.0137 0.0005 32.0137"></polygon>
+    </defs>
+    <g id="corchete" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-11" transform="translate(36.500000, 8.000000) rotate(-90.000000) translate(-36.500000, -8.000000) translate(29.000000, -28.000000)">
+            <g id="Group-5" transform="translate(0.000000, 24.940900)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Clip-4"></g>
+            </g>
+            <g id="Group-8" transform="translate(0.000000, 0.940900)"></g>
+            <mask id="mask-4" fill="white">
+                <use xlink:href="#path-3"></use>
+            </mask>
+            <g id="Clip-7"></g>
+            <path d="M3.4005,32.0137 C1.5225,32.0137 0.0005,30.4917 0.0005,28.6137 L0.0005,4.3997 C0.0005,2.5217 1.5225,0.9997 3.4005,0.9997 C5.2785,0.9997 6.8005,2.5217 6.8005,4.3997 L6.8005,28.6137 C6.8005,30.4917 5.2785,32.0137 3.4005,32.0137" id="Fill-6" fill="#F6A834" style="mix-blend-mode: multiply;"></path>
+            <path d="M3.4,71.9409 L3.4,71.9409 C1.522,71.9409 0,70.4189 0,68.5409 L0.001,44.3669 C0.001,42.4889 1.524,40.9669 3.401,40.9669 C5.279,40.9669 6.801,42.4889 6.801,44.3669 L6.8,68.5409 C6.8,70.4189 5.277,71.9409 3.4,71.9409" id="Fill-9" fill="#F6A834"></path>
+            <path d="M3.4,47.7236 C2.53,47.7236 1.66,47.3916 0.996,46.7276 C-0.332,45.3996 -0.332,43.2476 0.996,41.9196 L8.827,34.0886 C10.155,32.7616 12.307,32.7616 13.635,34.0886 C14.963,35.4166 14.963,37.5686 13.635,38.8966 L5.804,46.7276 C5.14,47.3916 4.27,47.7236 3.4,47.7236" id="Fill-1" fill="#F6A834" style="mix-blend-mode: multiply;"></path>
+            <path d="M11.2311,39.8935 C10.3611,39.8935 9.4911,39.5615 8.8271,38.8975 L0.9961,31.0665 C-0.3319,29.7385 -0.3319,27.5855 0.9961,26.2585 C2.3241,24.9315 4.4771,24.9315 5.8051,26.2585 L13.6351,34.0895 C14.9631,35.4175 14.9631,37.5705 13.6351,38.8975 C12.9711,39.5615 12.1011,39.8935 11.2311,39.8935" id="Fill-3" fill="#4BBED8" style="mix-blend-mode: multiply;"></path>
+        </g>
+    </g>
+</svg>
